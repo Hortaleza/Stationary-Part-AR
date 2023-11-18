@@ -125,6 +125,10 @@ if __name__ == "__main__":
     color_display_1 = ColorDisplayWindow(
         window_height=500,
         window_width=1500,
+
+        color_array=color_detection_list,
+
+
         window_name="displayWindow1",
         group_name="RDC Team 11",
     )
