@@ -1,9 +1,27 @@
 
 import cv2
 import numpy as np
+import serial
 
 # Global variable that holds the BGR values of your detection for the code to output
 color_detection_list = [(0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
+
+target_color = 'red'
+
+final_string = ''
+
+laststring = ''
+
+count = 0
+
+ser = serial.Serial(
+    port="COM8",  ## port name
+    baudrate=115200,  ## baud rate
+    bytesize=8,  ## number of databits
+    parity=serial.PARITY_NONE,  ## enable parity checking
+    stopbits=1,  ## number of stopbits
+    timeout=1,  ## set a timeout value, None for waiting forever
+)
 
 color_ranges = {'red': {'Lower': np.array([0, 90, 80]), 'Upper': np.array([12, 255, 255])},
                 'blue': {'Lower': np.array([95, 60, 90]), 'Upper': np.array([180, 255, 255])},
@@ -231,8 +249,21 @@ while cap.isOpened():
     color2 = get_color(frame2)
     color3 = get_color(frame3)
     color4 = get_color(frame4)
+    color = [color1, color2, color3, color4]
     print(color1, color2, color3, color4)
-
+    for i in range(4):
+        if color[i] == target_color:
+            final_string += str(i+1)
+    if final_string == laststring:
+        count += 1
+    else:
+        count = 0
+    if (count > 64):
+        ser.write(final_string.encode())
+        print(final_string)
+    laststring = final_string
+    final_string = ''
+    
     color_detection_list = [COLOR_TO_GRB[color1], COLOR_TO_GRB[color2], COLOR_TO_GRB[color3], COLOR_TO_GRB[color4]]
 
     # Updates display
@@ -260,6 +291,7 @@ while cap.isOpened():
     cv2.imshow("cropped_frame", cropped_frame)
 
     if cv2.waitKey(10) & 0xFF == ord("q"):  # waits for 'q' key to be pressed
+        ser.close() 
         break
 
 cv2.destroyAllWindows()

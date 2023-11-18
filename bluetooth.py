@@ -3,7 +3,7 @@ import serial
 # MUST USE UART3 on the embedded system
 
 ser = serial.Serial(
-    port="COM3",  ## port name
+    port="COM8",  ## port name
     baudrate=115200,  ## baud rate
     bytesize=8,  ## number of databits
     parity=serial.PARITY_NONE,  ## enable parity checking
