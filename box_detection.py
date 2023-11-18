@@ -9,8 +9,6 @@ color_ranges = {'red': {'Lower': np.array([0, 90, 80]), 'Upper': np.array([12, 2
 
 color_positions = []
 
-final_string = ''
-
 cap = cv2.VideoCapture(1)
 
 
@@ -41,9 +39,7 @@ while cap.isOpened():
 
 
     frame_blur = cv2.GaussianBlur(frame, (63, 31), 0)
-
     hsvFrame = cv2.cvtColor(frame_blur, cv2.COLOR_BGR2HSV)
-    
 
     red_mask = cv2.inRange(hsvFrame, color_ranges['red']['Lower'], color_ranges['red']['Upper'])
     green_mask = cv2.inRange(hsvFrame, color_ranges['green']['Lower'], color_ranges['green']['Upper'])
@@ -89,7 +85,10 @@ while cap.isOpened():
     color4 = get_color(frame4)
     print(color1, color2, color3, color4)
 
-    cv2.imshow("Final", frame)
+    if cv2.waitKey(10) & 0xFF == ord('s'):
+        cv2.imwrite('frame2.jpg', frame)
+
+    cv2.imshow("frame", frame)
     cv2.imshow("cropped_frame", cropped_frame)
     
 
